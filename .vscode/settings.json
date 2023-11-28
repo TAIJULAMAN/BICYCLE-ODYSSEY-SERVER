@@ -1,28 +1,23 @@
 {
-    "workbench.colorCustomizations": {
-        "activityBar.activeBackground": "#1f6fd0",
-        "activityBar.activeBorder": "#ee90bb",
-        "activityBar.background": "#1f6fd0",
-        "activityBar.foreground": "#e7e7e7",
-        "activityBar.inactiveForeground": "#e7e7e799",
-        "activityBarBadge.background": "#ee90bb",
-        "activityBarBadge.foreground": "#15202b",
-        "sash.hoverBorder": "#1f6fd0",
-        "statusBar.background": "#1857a4",
-        "statusBar.foreground": "#e7e7e7",
-        "statusBarItem.hoverBackground": "#1f6fd0",
-        "statusBarItem.remoteBackground": "#1857a4",
-        "statusBarItem.remoteForeground": "#e7e7e7",
-        "titleBar.activeBackground": "#1857a4",
-        "titleBar.activeForeground": "#e7e7e7",
-        "titleBar.inactiveBackground": "#1857a499",
-        "titleBar.inactiveForeground": "#e7e7e799",
-        "commandCenter.border": "#e7e7e799"
-    },
-    "peacock.color": "#1857a4",
-    "cSpell.words": [
-        "delivertext",
-        "orderd",
-        "upsert"
-    ]
+  "search.exclude": {
+    "**/.sst": true
+  },
+  "task.allowAutomaticTasks": true,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "debug.openDebug": "neverOpen",
+  "problems.autoReveal": true,
+  "terminal.integrated.hideOnStartup": "always",
+  "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  "terminal.integrated.inheritEnv": false,
+  "jestrunner.configPath": "jest.unit.config.cjs",
+  "compile-hero.disable-compile-files-on-did-save-code": true,
+  "tasks": {
+    "label": "lint on open",
+    "type": "shell",
+    "command": "npm run lint",
+    "runOn": "folderOpen"
+  }
 }
