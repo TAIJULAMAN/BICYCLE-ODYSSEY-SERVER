@@ -1,35 +1,42 @@
 const express = require("express");
 const cors = require("cors");
+// const { MongoClient, ServerApiVersion } = require('mongodb');
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
-const stripe = require("stripe")(process.env.SECRET_STRIP);
+// const stripe = require("stripe")(process.env.SECRET_STRIP);
 
+// middleware
 app.use(cors());
 app.use(express.json());
 
-function verifyJWT(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).send({ message: "Unauthorized" });
-  }
-  const token = authHeader.split(" ")[1];
-  jwt.verify(token, process.env.TOKEN, function (err, decoded) {
-    if (err) {
-      res.status(403).send({ message: "Access Expired" });
+// token verify
+  function verifyJWT(req, res, next) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).send({ message: "Unauthorized" });
     }
-    req.decoded = decoded;
-    next();
-  });
-}
+    const token = authHeader.split(" ")[1];
+    jwt.verify(token, process.env.TOKEN, function (err, decoded) {
+      if (err) {
+        res.status(403).send({ message: "Access Expired" });
+      }
+      req.decoded = decoded;
+      next();
+    });
+  }
 
-const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@bicycle-odyssey.snj10.mongodb.net/?retryWrites=true&w=majority`;
+const uri = "mongodb+srv://BICYCLE-ODYSSEY-SERVER:1vPAjm5tbwuCKgzX@cluster0.rms22hp.mongodb.net/?retryWrites=true&w=majority";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverApi: ServerApiVersion.v1,
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
 });
 
 async function run() {
@@ -39,17 +46,10 @@ async function run() {
     const orderedCollection = client.db("bicycle_odyssey").collection("orderd");
     const userCollection = client.db("bicycle_odyssey").collection("users");
     const reviewCollection = client.db("bicycle_odyssey").collection("reviews");
-    const paymentCollection = client
-      .db("bicycle_odyssey")
-      .collection("payments");
-    const profileCollection = client
-      .db("bicycle_odyssey")
-      .collection("profiles");
-    // get all parts
-    app.get("/parts", async (req, res) => {
-      const result = await partsCollection.find().toArray();
-      res.send(result);
-    });
+    const paymentCollection = client.db("bicycle_odyssey").collection("payments");   
+    const profileCollection = client.db("bicycle_odyssey").collection("profiles");
+
+     
     // stripe
     app.post("/create-payment-intent", async (req, res) => {
       const service = req.body;
@@ -64,6 +64,14 @@ async function run() {
         clientSecret: paymentIntent.client_secret,
       });
     });
+
+
+    // get all parts
+    app.get("/parts", async (req, res) => {
+      const result = await partsCollection.find().toArray();
+      res.send(result);
+    });
+
     // get one tools
     app.get("/parts/:_id", async (req, res) => {
       const _id = req.params._id;
@@ -236,10 +244,19 @@ async function run() {
       });
       res.send({ result, token });
     });
+
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
+    // Ensures that the client will close when you finish/error
+    // await client.close();
   }
 }
 run().catch(console.dir);
+
 
 app.get("/", (req, res) => {
   res.send("Hello bicycle odyssey!");
